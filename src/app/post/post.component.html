@@ -18,50 +18,99 @@
 
 <div class="row mb-3" *ngIf="showTable">
   <div class="col-md-6 mx-auto">
-    <div class="form-group">
-      <label for="title">Title</label>
-      <input id="title" [(ngModel)]="myPost.title" type="text" class="form-control">
-    </div>
-    <div class="form-group">
-      <label for="body">Body</label>
-      <textarea id="body" [(ngModel)]="myPost.body" name="" id="" class="form-control" rows="4"></textarea>
-    </div>
-    <button *ngIf="editable" (click)="updatePost()" class="btn btn-warning btn-block"><i class="fa fa-send"></i>
-      Edite</button>
-    <button *ngIf="!editable" (click)="createPost()" class="btn btn-success btn-block"><i class="fa fa-send"></i>
-      Envoyer</button>
+
+    <!-- 
+      Form => name obligatoire
+     -->
+
+
+    <form #myForm="ngForm" action="">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input name="title" (change)="log(postTitle)" required minlength="3" maxlength="15" email #postTitle="ngModel"
+          id="title" [(ngModel)]="myPost.title" type="text" class="form-control">
+        <!-- pattern="/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/" === email -->
+        <div class="alert alert-warning" *ngIf="postTitle.invalid && postTitle.touched">
+          <div *ngIf="postTitle.errors.required">This Field is Required !</div>
+          <div *ngIf="postTitle.errors.pattern">This Fieldnot respect our pattern !</div>
+          <div *ngIf="postTitle.errors.email">This Field is not respect email format !</div>
+          <div *ngIf="postTitle.errors.minlength">This fiel should be more than 3 caracters !</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="body">Body</label>
+        <textarea name="body" #postBody="ngModel" required minlength="10" id="body" [(ngModel)]="myPost.body" id=""
+          class="form-control" rows="4"></textarea>
+        <div class="alert alert-warning" *ngIf="postBody.invalid && postBody.touched">
+          <div *ngIf="postBody.errors.required">This Field is Required !</div>
+          <div *ngIf="postBody.errors.minlength">This fiel should be more than 10 caracters !</div>
+        </div>
+      </div>
+      <button *ngIf="editable" (click)="updatePost()" class="btn btn-warning btn-block"><i class="fa fa-send"></i>
+        Edite</button>
+
+      <button [disabled]="myForm.invalid" *ngIf="!editable" (click)="addPost(myForm)"
+        class="btn btn-success btn-block"><i class="fa fa-send"></i>
+        Envoyer</button>
+      <!-- <button *ngIf="!editable && myForm.valid" (click)="createPost()" class="btn btn-success btn-block"><i
+          class="fa fa-send"></i>
+        Envoyer</button> -->
+      <!-- <button [disabled]="myForm.invalid" *ngIf="!editable" (click)="createPost()" class="btn btn-success btn-block"><i
+            class="fa fa-send"></i>
+          Envoyer</button> -->
+      <!-- <button [disabled]="postTitle.invalid || postBody.invalid" *ngIf="!editable" (click)="createPost()"
+          class="btn btn-success btn-block"><i class="fa fa-send"></i>
+          Envoyer</button> -->
+    </form>
+
   </div>
 </div>
 
-<div class="row">
-  <div class="col-md-12">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Title</th>
-          <th>Body</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr (dblclick)="deleteConfirmation(post.id, i)" *ngFor="let post of posts; index as i">
-          <td>{{post.id}}</td>
-          <td>{{post.title}}</td>
-          <td>{{post.body}}</td>
-          <td class="text-right" nowrap>
-            <button class="btn btn-warning btn-sm mr-1" (click)="editPost(post)">
-              <i class="fa fa-pencil"></i>
-            </button>
 
-            <button class="btn btn-danger btn-sm" (click)="deleteConfirmation(post.id, i)">
-              <i class="fa fa-times"></i>
-            </button>
-          </td>
-          <td></td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
+<div *ngIf="posts.length; then postsExist else noPosts"></div>
+
+
+<ng-template #postsExist>
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Body</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr (dblclick)="deleteConfirmation(post.id, i)" *ngFor="let post of posts; index as i">
+            <td>{{post.id}}</td>
+            <td>{{post.title}}</td>
+            <td>{{post.body}}</td>
+            <td class="text-right" nowrap>
+              <button class="btn btn-warning btn-sm mr-1" (click)="editPost(post)">
+                <i class="fa fa-pencil"></i>
+              </button>
+
+              <button class="btn btn-danger btn-sm" (click)="deleteConfirmation(post.id, i)">
+                <i class="fa fa-times"></i>
+              </button>
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
+</ng-template>
+
+
+
+
+<ng-template #noPosts>
+  <div class="alert alert-dabger">
+    <!-- *ngIf="!posts.length" -->
+    no courses
+  </div>
+</ng-template>

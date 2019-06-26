@@ -119,4 +119,27 @@ export class PostComponent implements OnInit {
   onShowForm() {
     this.showTable = !this.showTable;
   }
+
+
+  log(postTitle) {
+    console.log(postTitle);
+  }
+
+  addPost(myForm) {
+    console.log(myForm);
+    if (myForm.valid) {
+      this.postService.create(this.myPost).subscribe(res => {
+        this.posts.unshift(res);
+
+        this.myPost = {
+          title: '',
+          body: ''
+        }
+      })
+    } else {
+      alert('formulaire non valid');
+    }
+  }
+
+
 }
