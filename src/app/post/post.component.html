@@ -1,0 +1,67 @@
+<div class="row">
+  <div class="col-lg-6">
+    <h1>List of posts</h1>
+  </div>
+  <div class="col-lg-6 text-right">
+    <button (click)="onShowForm()" class="btn btn-success">
+      <i [ngStyle]="{
+        'fontSize' : showTable ? '40px' : '20px',
+        'color': showTable ? 'yellow' : 'green'
+      }" class="fa" [ngClass]="{
+        'fa-plus': !showTable, 
+        'fa-minus': showTable
+      }"></i>
+    </button>
+  </div>
+</div>
+
+
+<div class="row mb-3" *ngIf="showTable">
+  <div class="col-md-6 mx-auto">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input id="title" [(ngModel)]="myPost.title" type="text" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="body">Body</label>
+      <textarea id="body" [(ngModel)]="myPost.body" name="" id="" class="form-control" rows="4"></textarea>
+    </div>
+    <button *ngIf="editable" (click)="updatePost()" class="btn btn-warning btn-block"><i class="fa fa-send"></i>
+      Edite</button>
+    <button *ngIf="!editable" (click)="createPost()" class="btn btn-success btn-block"><i class="fa fa-send"></i>
+      Envoyer</button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Body</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr (dblclick)="deleteConfirmation(post.id, i)" *ngFor="let post of posts; index as i">
+          <td>{{post.id}}</td>
+          <td>{{post.title}}</td>
+          <td>{{post.body}}</td>
+          <td class="text-right" nowrap>
+            <button class="btn btn-warning btn-sm mr-1" (click)="editPost(post)">
+              <i class="fa fa-pencil"></i>
+            </button>
+
+            <button class="btn btn-danger btn-sm" (click)="deleteConfirmation(post.id, i)">
+              <i class="fa fa-times"></i>
+            </button>
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
