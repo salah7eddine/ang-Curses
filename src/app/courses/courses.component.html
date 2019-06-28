@@ -12,7 +12,13 @@
 
 <ul class="list-group">
     <li class="list-group-item" *ngFor="let course of courses; index as i">
-        {{ course.title | uppercase }} - {{ course.price }} - {{ course.published }}
+        {{ course.title | uppercase }} - {{ course.price | currency }} - {{ course.published }} - Like:
+        {{ course.vote.like}} -
+        DisLike: {{ course.vote.dislike}}
+
+        <app-vote [myLike]="course.vote.like" [myDislike]="course.vote.dislike"
+            (voteFromChildToParent)="takeVote($event, course)">
+        </app-vote>
 
         <div class="text-right">
 
